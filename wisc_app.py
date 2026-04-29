@@ -1,4 +1,7 @@
 import streamlit as st
+from pathlib import Path
+
+BASE_DIR = Path(__file__).parent
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -28,7 +31,7 @@ def fig_layout(fig, h=400):
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("wisc_bc_data.csv").drop(columns=["id"], errors="ignore").dropna(axis=1, how="all")
+    df = pd.read_csv(BASE_DIR / "wisc_bc_data.csv").drop(columns=["id"], errors="ignore").dropna(axis=1, how="all")
     df["diagnosis_encoded"] = LabelEncoder().fit_transform(df["diagnosis"])
     return df
 
@@ -45,7 +48,7 @@ MODELS = {
 }
 
 with st.sidebar:
-    st.image("OIP.webp", use_container_width=True)
+    st.image(str(BASE_DIR / "OIP.webp"), use_container_width=True)
     st.markdown("---")
     page = st.radio("Navigation", ["Accueil", "Exploration des donnees", "Visualisations",
                                     "Modelisation ML", "Prediction interactive"])
@@ -60,7 +63,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # ======================= ACCUEIL =======================
 if page == "Accueil":
-    st.image("eye-catching-d-illustration-depicts-cancer-cell-against-vibrant-blue-backdrop-its-glowing-connections-symbolize-316316209.webp",
+    st.image(str(BASE_DIR / "eye-catching-d-illustration-depicts-cancer-cell-against-vibrant-blue-backdrop-its-glowing-connections-symbolize-316316209.webp"),
              use_container_width=True)
     st.title("Breast Cancer Diagnostic")
     st.caption("Probleme ML : Classification binaire de la variable 'diagnosis' (M = Malin, B = Benin)")
@@ -84,7 +87,7 @@ if page == "Accueil":
             "(chacune avec mean, se et worst)."
         )
     with col_r:
-        st.image("R.jpg", caption="Biopsie par aspiration a l'aiguille fine (FNA)")
+        st.image(str(BASE_DIR / "R.jpg"), caption="Biopsie par aspiration a l'aiguille fine (FNA)")
 
     st.subheader("Distribution de la variable cible : diagnosis")
     diag_counts = df["diagnosis"].value_counts()
@@ -284,7 +287,7 @@ elif page == "Modelisation ML":
 # ======================= PREDICTION =======================
 elif page == "Prediction interactive":
     st.title("Prediction de diagnosis")
-    st.image("R.jpg", width=300)
+    st.image(str(BASE_DIR / "R.jpg"), width=300)
     st.info("Ajustez les curseurs pour simuler les mesures d'une biopsie FNA. "
             "Le modele predira la valeur de **diagnosis** : Benin (B) ou Malin (M).")
 
